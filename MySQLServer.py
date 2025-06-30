@@ -8,6 +8,7 @@ from mysql.connector import Error
 
 def create_database():
     """Create the alx_book_store database if it doesn't exist"""
+    connection = None
     try:
         # Connect to MySQL server without specifying a database
         connection = mysql.connector.connect(
@@ -24,13 +25,15 @@ def create_database():
             
             print("Database 'alx_book_store' created successfully!")
             
-    except Error as e:
-        print(f"Error while connecting to MySQL: {e}")
+    except mysql.connector.Error as error:
+        print(f"Error while connecting to MySQL: {error}")
     finally:
         # Close the connection
-        if 'connection' in locals() and connection.is_connected():
-            cursor.close()
+        if connection and connection.is_connected():
+            if 'cursor' in locals():
+                cursor.close()
             connection.close()
+            print("MySQL connection is closed")
 
 if __name__ == "__main__":
     create_database()
